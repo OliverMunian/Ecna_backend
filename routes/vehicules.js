@@ -68,15 +68,11 @@ router.get('/interventions/:plaque', (req,res) => {
 
 router.post('/update/:plaque', (req,res)=>{
     Vehicule.updateOne({plaque:req.params.plaque} , {etat : req.body.etat})
-    .then(data=>{
+    .then(()=>{
        res.json({result:true})
     })
 })
 
-router.get('/delete/deleteAll', (req, res) => {
-  Vehicule.deleteMany({})
-  .then(data => console.log('done'))
-})
 
 
 router.delete('/delete/:plaque', (req,res)=>{
