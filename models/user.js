@@ -4,6 +4,7 @@ const userSchema = mongoose.Schema({
     username : String,
     email : String,
     password : String,
+    isAdmin: Boolean,
     token : String,
     entreprises : [{type:mongoose.Schema.ObjectId, ref:'entreprises'}]
 })

@@ -1,17 +1,24 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const patientsSchema = mongoose.Schema ({
-    lastName : String,
-    firstName:String,
-    adress : String,
-    phone : String,
-    SSnumber : String,
-    mutuelle : String,
-    valide : String,
-    interventions : {type : mongoose.Schema.ObjectId, ref:'interventions'},
-    token : String,
+const adressSchema= mongoose.Schema({
+    streetNumber: Number,
+    street: String,
+    city: String,
+    postalCode: Number,
 })
 
-const Patient = mongoose.model('patients',patientsSchema)
+const patientsSchema = mongoose.Schema({
+  lastName: String,
+  firstName: String,
+  address: adressSchema,
+  phone: String,
+  SSnumber: String,
+  mutuelle: String,
+  valide: String,
+  interventions: { type: mongoose.Schema.ObjectId, ref: "interventions" },
+  token: String,
+});
 
-module.exports = Patient
+const Patient = mongoose.model("patients", patientsSchema);
+
+module.exports = Patient,adressSchema;

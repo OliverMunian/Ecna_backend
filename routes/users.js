@@ -20,45 +20,48 @@ router.post("/signup", (req, res) => {
   // Generation token
   let token = uid2(32);
   // Check si user existe déja dans la BDD
-  User.findOne({ username: req.body.username }).then((userData) => {
-    Entreprise.findOne({ SIREN: req.body.SIREN }).then((entrepriseData) => {
-      if (userData === null && entrepriseData === null) {
-        const newUser = new User({
-          username: req.body.username,
-          email: req.body.email,
-          password: hash,
-          token: token,
-          entreprises: [],
-        });
-        newUser.save().then(() => {
-          const newEntreprise = new Entreprise({
-            name: req.body.name,
-            SIREN: req.body.SIREN,
-            vehicules: [],
+  User.findOne({ username: req.body.username, email: req.body.email }).then(
+    (userData) => {
+      Entreprise.findOne({ SIREN: req.body.SIREN }).then((entrepriseData) => {
+        if (userData === null && entrepriseData === null) {
+          const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hash,
+            token: token,
+            isAdmin: true,
+            entreprises: [],
           });
-          newEntreprise.save().then((data) => {
-            // On met à jour le document user dont le token correspond au token renvoyé du front(présent dans le reducer)
-            User.updateOne(
-              { token: token },
-              { $push: { entreprises: data._id } }
-            ).then(() => {
-              res.json({
-                result: true,
-                token: token,
-                SIREN: req.body.SIREN,
-                message: "Entreprise created & added to user document",
+          newUser.save().then(() => {
+            const newEntreprise = new Entreprise({
+              name: req.body.name,
+              SIREN: req.body.SIREN,
+              vehicules: [],
+            });
+            newEntreprise.save().then((data) => {
+              // On met à jour le document user dont le token correspond au token renvoyé du front(présent dans le reducer)
+              User.updateOne(
+                { token: token },
+                { $push: { entreprises: data._id } }
+              ).then(() => {
+                res.json({
+                  result: true,
+                  token: token,
+                  SIREN: req.body.SIREN,
+                  message: "Entreprise created & added to user document",
+                });
               });
             });
           });
-        });
-      } else {
-        res.json({
-          result: false,
-          error: "Une entreprise avec ce SIREN existe déjà",
-        });
-      }
-    });
-  });
+        } else {
+          res.json({
+            result: false,
+            error: "Une entreprise avec ce SIREN existe déjà",
+          });
+        }
+      });
+    }
+  );
 });
 
 // Route signIn (testé)
@@ -86,6 +89,25 @@ router.post("/signin", (req, res) => {
         });
       }
     });
+});
+
+router.get("/:token", (req, res) => {
+  User.findOne({ token: req.params.token }).populate("entreprises").then((data) => {
+    if (data) {
+      console.log(data);
+      res.json({
+        result: true,
+        email: data.email,
+        username: data.username,
+        entreprise : data.entreprises
+      });
+    } else {
+      res.json({
+        result: false,
+        error: "Aucun utilisateur trouvé",
+      });
+    }
+  });
 });
 
 // // Création du document entreprise lorsqu'un user sign up (testé)

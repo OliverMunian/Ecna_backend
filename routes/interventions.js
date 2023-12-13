@@ -20,7 +20,12 @@ let interToken = uid2(32)
         const newPatient = new Patient({
             firstName : req.body.firstName,
             lastName: req.body.lastName,
-            adress : req.body.adress,
+            address :{
+                streetNumber: req.body.streetNumber,
+                street: req.body.street,
+                city: req.body.city,
+                postalCode: req.body.postalCode
+            },
             SSnumber: req.body.SSnumber,
             phone : req.body.phone,
             valide : req.body.valide,
