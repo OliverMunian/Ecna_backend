@@ -1,13 +1,13 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const vehiculesSchema = mongoose.Schema({
-    plaque : String,
-    type : String,
-    interventions : [{ type : mongoose.Schema.ObjectId, ref : 'interventions'}],
-    etat : String,
-    SIREN : String
-})
+  plaque: String,
+  type: String,
+  etat: String,
+  SIREN: String,
+  interventions: [{ type: mongoose.Schema.ObjectId, ref: "interventions" }],
+});
 
-const Vehicule = mongoose.model('vehicules' , vehiculesSchema)
+const Vehicule = mongoose.model("vehicules", vehiculesSchema);
 
-module.exports = Vehicule
+module.exports = Vehicule;
